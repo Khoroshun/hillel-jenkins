@@ -7,9 +7,11 @@ node {
 
     files = sh(returnStdout: true, script: 'ls')
     println "list of property files"
-    println files.split("\n").collect()
+    param_files = files.split("\n").collect()[1,2]
+
     
-    properties([buildDiscarder(logRotator(numToKeepStr: '100'))])
+    properties([buildDiscarder(logRotator(numToKeepStr: '100'))],
+    [parameters([[$class: 'ChoiceParameter', choiceType: 'PT_SINGLE_SELECT', name: 'param_file', script: [classpath: [], sandbox: false, script: 'return ${param_files}']]])])
     
     sh 'echo Hello World!'
 }
